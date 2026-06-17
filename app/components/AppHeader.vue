@@ -51,7 +51,7 @@ onMounted(() => {
 <template>
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex items-center justify-between h-16 gap-2 sm:gap-6 lg:gap-8">
+      <nav class="flex items-center justify-between h-16 gap-2 sm:gap-6 lg:gap-8 relative">
         
         <!-- Hamburger Menu (Mobile) -->
         <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 -ml-2 text-gray-600 dark:text-gray-300 hover:text-green-800 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 focus:outline-none">
@@ -83,45 +83,67 @@ onMounted(() => {
         </div>
 
         <!-- Search -->
-        <div ref="searchRef" class="relative w-full max-w-[140px] sm:max-w-xs ml-auto">
+        <div ref="searchRef" :class="[
+          'w-full ml-auto transition-all duration-200',
+          showSearch ? 'absolute inset-x-0 top-1/2 -translate-y-1/2 z-50 sm:relative sm:translate-y-0 sm:top-auto sm:max-w-xs' : 'relative max-w-[140px] sm:max-w-xs'
+        ]">
           <div
-            class="flex items-center cursor-text border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-full px-3 sm:px-4 h-9 sm:h-10 gap-2 hover:border-green-500 dark:hover:border-green-500 focus-within:ring-2 focus-within:ring-green-500/20 focus-within:border-green-500 transition-all duration-200"
+            :class="[
+              'flex items-center cursor-text border border-gray-300 dark:border-gray-700 rounded-full px-3 sm:px-4 h-9 sm:h-10 gap-2 hover:border-green-500 dark:hover:border-green-500 focus-within:ring-2 focus-within:ring-green-500/20 focus-within:border-green-500 transition-all duration-200',
+              showSearch ? 'bg-white dark:bg-gray-900 shadow-md sm:shadow-none sm:bg-gray-50 sm:dark:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800'
+            ]"
             @click="showSearch = true"
           >
-            <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- Search Icon -->
+            <svg :class="['w-4 h-4 text-gray-400 shrink-0', showSearch ? 'hidden sm:block' : 'block']" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
+            
+            <!-- Back Arrow (Mobile when open) -->
+            <button v-if="showSearch" @click.stop="closeSearch" class="sm:hidden shrink-0 p-1 -ml-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none">
+               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+               </svg>
+            </button>
+
             <input
               v-if="showSearch"
               v-model="searchQuery"
               @input="onSearchInput"
               @keydown.escape="closeSearch"
               autofocus
-              placeholder="Search..."
-              class="flex-1 bg-transparent border-none outline-none text-xs sm:text-sm text-gray-900 dark:text-gray-100 w-full"
+              placeholder="Search products..."
+              class="flex-1 bg-transparent border-none outline-none text-sm text-gray-900 dark:text-gray-100 w-full min-w-0"
             />
             <span v-else class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">Search...</span>
+            
+            <!-- Clear Button -->
+            <button v-if="showSearch && searchQuery" @click.stop="searchQuery = ''; searchResults = []" class="shrink-0 p-1 -mr-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+               </svg>
+            </button>
           </div>
 
           <!-- Search Dropdown -->
           <Transition name="fade-down">
             <div
               v-if="showSearch && searchQuery"
-              class="absolute top-12 -right-4 sm:right-0 sm:left-0 w-screen sm:w-auto max-w-sm sm:max-w-none bg-white dark:bg-gray-800 border-b sm:border border-gray-200 dark:border-gray-700 sm:rounded-xl shadow-xl overflow-hidden z-50"
+              class="absolute top-12 left-0 right-0 w-full sm:w-auto sm:min-w-[100%] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden z-50 max-h-[70vh] overflow-y-auto"
             >
-              <div v-if="searchResults.length === 0" class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                No products found for "{{ searchQuery }}"
+              <div v-if="searchResults.length === 0" class="px-4 py-4 text-sm text-center text-gray-500 dark:text-gray-400">
+                No products found for "<span class="font-medium text-gray-900 dark:text-gray-100">{{ searchQuery }}</span>"
               </div>
               <button
                 v-for="result in searchResults.slice(0, 6)"
                 :key="result.id"
                 @click="goToProduct(result.id)"
-                class="w-full flex items-center px-4 py-2.5 gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-left"
+                class="w-full flex items-center px-4 py-3 gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 text-left border-b border-gray-100 dark:border-gray-700/50 last:border-0"
               >
-                <img :src="result.img" :alt="result.name" class="w-10 h-10 rounded-lg object-cover shrink-0" />
+                <img :src="result.img" :alt="result.name" class="w-12 h-12 rounded-lg object-cover shrink-0 bg-gray-100 dark:bg-gray-800" />
                 <div class="min-w-0 flex-1">
                   <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ result.name }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ result.category }} &middot; ${{ result.price }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ result.category }} &middot; <span class="text-green-600 dark:text-green-400 font-medium">${{ result.price }}</span></p>
                 </div>
               </button>
             </div>
