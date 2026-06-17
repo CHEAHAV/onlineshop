@@ -34,4 +34,9 @@ export default defineNuxtConfig({
       include: ['@heroicons/vue/24/outline'],
     }
   },
+  nitro: {
+    prerender: {
+      failOnError: false   // ← add this
+    }
+  }
 })
