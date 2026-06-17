@@ -6,7 +6,7 @@
       <div class="flex items-center gap-2 text-sm text-gray-400">
         <NuxtLink to="/" class="hover:text-gray-700">Home</NuxtLink>
         <span>/</span>
-        <NuxtLink to="/category/electronics" class="hover:text-gray-700">Electronics</NuxtLink>
+        <NuxtLink to="/category" class="hover:text-gray-700">Electronics</NuxtLink>
         <span>/</span>
         <span class="text-gray-700">Wireless Headphones</span>
       </div>
