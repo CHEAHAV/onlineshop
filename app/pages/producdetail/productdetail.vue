@@ -181,7 +181,7 @@
       </div>
 
       <div class="text-center">
-        <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100 font-medium flex items-center gap-2 mx-auto">
+        <button class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 font-medium flex items-center gap-2 mx-auto">
           View all 156 reviews →
         </button>
       </div>
