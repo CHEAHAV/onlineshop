@@ -1,0 +1,62 @@
+@reference "tailwindcss";
+@import './css/import.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --bg-primary: #f9fafb;
+  --bg-card: #ffffff;
+  --border-color: #e5e7eb;
+}
+
+.dark {
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --bg-primary: #111827;
+  --bg-card: #1f2937;
+  --border-color: #374151;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans Khmer', sans-serif;
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+  min-height: 100vh;
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-600 rounded-sm; }
+
+/* Toast notification */
+.toast-enter-active, .toast-leave-active {
+  transition: all 0.3s ease;
+}
+.toast-enter-from { opacity: 0; transform: translateY(-20px); }
+.toast-leave-to { opacity: 0; transform: translateY(-20px); }
+
+/* Product card hover */
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  @apply shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)];
+}

@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+.my-class {
+  @apply bg-gray-50 text-gray-900;
+}
